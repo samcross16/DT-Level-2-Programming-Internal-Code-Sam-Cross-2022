@@ -15,9 +15,11 @@ public class TextPopUp : MonoBehaviour
     //A boolean variable called playerInRange. This will be used for determining whether or not the player is inside the area that they should be for the text box should appear on the screen.
     public bool playerInRange;
     
-    public GameObject playerCharacterVariables;
+    public GameObject PlayerObject;
 
+    private PlayerController PlayerVariables;
     void Start () {
+        PlayerVariables = PlayerObject.GetComponent<PlayerController>();
         textBox.SetActive(false);
     }
     //The Update method is called once each frame while the game is running.
@@ -32,6 +34,9 @@ public class TextPopUp : MonoBehaviour
                 if(Input.GetKeyDown(KeyCode.Space)) {
                     //Sets the textBox object to inactive in the scene.
                     textBox.SetActive(false);
+                    //Accesses the playerMovementStop variable from the PlayerController class in the PlayerController script and sets it to false.
+                    //This enables movement of the Player object again, as the textBox object is no longer active in the scene.
+                    PlayerVariables.playerMovementStop = false;
                     //Destroys this script to prevent the textBox from reappearing next frame.
                     Destroy(this);
                }
@@ -39,6 +44,7 @@ public class TextPopUp : MonoBehaviour
             else {
                 //Sets the text box active in the scene.
                 textBox.SetActive(true);
+                PlayerVariables.playerMovementStop = true;
             }
         }
     }
