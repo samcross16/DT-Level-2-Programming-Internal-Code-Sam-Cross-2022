@@ -8,14 +8,20 @@ public class TextPopUp : MonoBehaviour
 
     //Initialising variables here to make code more digestable.
 
+    //A GameObject called textBox_Trigger. This variable is used to delete the object that, when triggered, causes the textBox_lockedDoor object to appear on screen.
+    public GameObject textBox_Trigger;
     //A GameObject called textBox. This is the box that appears on screen to describe a scene for the player.
     public GameObject textBox;
     //A sting variable called textBoxWords. This is the actual writing that appears in the text component and on the screen.
     public string dialogWords;
+    //A string variable called dialogContinueMessageWords. This variable stores the words that are displayed in the bottom left corner of the text box.
+    public string dialogContinueMessageWords;
     //A boolean variable called playerInRange. This will be used for determining whether or not the player is inside the area that they should be for the text box should appear on the screen.
     public bool playerInRange;
-
+    //Text variables called dialogText and dialogContinueMessage. The Text variable is unique to the UnityEngine.UI library. 
+    //These are the UI components that displays the message that is to appear inside the text box.
     public Text dialogText;
+    public Text dialogContinueMessage;
     //This is used to access the Player object's components (the PlayerController script & class for this purpose) later in this script.
     public GameObject PlayerObject;
     //References the PlayerController class from the PlayerController script. this allows the variables from the PlayerController class to be accessed for use in this script.
@@ -40,13 +46,14 @@ public class TextPopUp : MonoBehaviour
                     PlayerVariables.playerMovementStop = false;
                     PlayerVariables.playerNoAttack = false;
                     //Destroys this script to prevent the textBox from reappearing next frame.
-                    Destroy(this);
+                    Destroy(textBox_Trigger);
                }
             
             else {
                 //Sets the text box active in the scene.
                 textBox.SetActive(true);
                 dialogText.text = dialogWords;
+                dialogContinueMessage.text = dialogContinueMessageWords;
                 PlayerVariables.playerMovementStop = true;
                 PlayerVariables.playerNoAttack = true;
             }

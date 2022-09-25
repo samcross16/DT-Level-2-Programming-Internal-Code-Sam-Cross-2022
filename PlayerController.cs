@@ -1,9 +1,7 @@
 //MAD IMPORTANT:
-//MAKE NOTES IN TRELLO ABOUT STOPPING THE PLAYER DURING EVENTS CODE.
-//ALSO REMEMBER TO UPDATE GITHUB NOW AND AT END OF LESSON.
-//FINISH COMMENTS.
-//UPDATE TRELLO WITH REST OF THIS SPRINT'S TO-DO'S: COMBAT SYSTEM, ENEMY SPRITES, CHANGING BETWEEN SCENES ON BUTTON PRESS, MAIN MENU SCREEN, UI, AND FINALLY PUTTING THE REST OF IT TOGETHER TO MAKE A FUNCTIONING GAME.
-//THEN START ON COMBAT SYSTEM.
+//UPDATE GITHUB BEFORE ANYTHING ELSE. YOU MADE THE CODE FOR THE PLAYER ATTACKS, THE LOCKED DOOR MESSAGE, AND THE CODE TO DAMAGE THE ENEEMY WHEN THE PLAYER ATTACKS IT.
+//UPDATE TRELLO WITH WHAT YOU'VE DONE. LOCKED DOOR AND KEY CODING, YOU GOT THE LOCKED DOOR MESSAGE WORKING, AND THE TRIGGER DELETES ITSELF.
+//FIGURE OUT HOW TO FIX THE PLAYER BEING ABLE TO MOVE UPWARDS AFTER THE TRIGGER IS DELETED.
 
 using System.Collections;
 using System.Collections.Generic;
@@ -19,20 +17,23 @@ public class PlayerController : MonoBehaviour
     public bool rightBlocked;
     public bool playerMovementStop;
     public bool playerNoAttack;
+    public bool playerHasKey;
     //Initialises the Vector2 variable unique to the Unity engine. The Vector variables store data about the position of objects in the game scene. Vector2 is used for the first 2 dimensions, x and y. This is more appropriate for a 2D environment than the more common Vector3, as only having to manage 2 dimensions reduces the chance for bugs or coding errors.
     public Vector2 playerPosition;
 
+    //Initialises four GameObject variables, called playerUpAttack, playerDownAttack, playerLeftAttack, and playerRightAttack. These are used to initialise and destroy the prefabricated objects for the player's attacks in combat. 
     public GameObject playerUpAttack;
     public GameObject playerDownAttack;
     public GameObject playerLeftAttack;
     public GameObject playerRightAttack;
-    // Start is called at the beginning of the game, before the first frame update
+
+    //The Start method is called at the beginning of the game, before the first frame update (before any calls of the Update method).
     void Start()
     {
 
     }
 
-    // Update is called once per frame
+    // Update is called once per frame during gameplay.
     void Update() {
         
         //Makes the playerPosition variable equal to the position of the Player object's transform in the scene, making playerPosition store the location of the Player object.
@@ -85,52 +86,92 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
+
+        //Proceeds with the seeded instructions if the playerNoAttack variable is false, i.e if it is appropriate for the player to attack in this instance.
         if(playerNoAttack == false) {
-            if(Input.GetKeyDown(KeyCode.UpArrow)) {
+            //Proceeds with the seeded code if the computer is recieving input from the UpArrow Key (the up arrow is currently being pressed) AND the upBlocked boolean is false.
+            if(Input.GetKeyDown(KeyCode.UpArrow) && upBlocked == false) {
+                //Creates a clone of the prefab object playerUpAttack 1 spacial unit upwards (towards positive y) of the player's current position.
                 GameObject playerUpAttackTemp = Instantiate(playerUpAttack, playerPosition + new Vector2(0,1), transform.rotation) as GameObject;
-                //playerNoAttack = true;
+//####### REMEMBER, VERY IMPORTANT playerNoAttack = true;
                 Destroy(playerUpAttackTemp, 0.3f);
             }
-            if(Input.GetKeyDown(KeyCode.DownArrow)) {
+            //Proceeds with the seeded code if the computer is recieving input from the DownArrow Key (the down arrow is currently being pressed) AND the downBlocked boolean is false.
+            if(Input.GetKeyDown(KeyCode.DownArrow) && downBlocked == false) {
+                //Creates a clone of the prefab object playerDownAttack 1 spacial unit downwards (towards negative y) of the player's current position.
                 GameObject playerDownAttackTemp = Instantiate(playerDownAttack, playerPosition + new Vector2(0,-1), transform.rotation) as GameObject;
-                //playerNoAttack = true;
+//####### REMEMBER, VERY IMPORTANT playerNoAttack = true;
                 Destroy(playerDownAttackTemp, 0.3f);
             }
-            if(Input.GetKeyDown(KeyCode.LeftArrow)) {
+            //Proceeds with the seeded code if the computer is recieving input from the LeftArrow Key (the left arrow is currently being pressed) AND the leftBlocked boolean is false.
+            if(Input.GetKeyDown(KeyCode.LeftArrow) && leftBlocked == false) {
+                //Creates a clone of the prefab object playerLeftAttack 1 spacial unit to the left (towards negative x) of the player's current position.
                 GameObject playerLeftAttackTemp = Instantiate(playerLeftAttack, playerPosition + new Vector2(-1,0), transform.rotation) as GameObject;
-                //playerNoAttack = true;
+//####### REMEMBER, VERY IMPORTANT playerNoAttack = true;
                 Destroy(playerLeftAttackTemp, 0.3f);
             }
-            if(Input.GetKeyDown(KeyCode.RightArrow)) {
+            //Proceeds with the seeded code if the computer is recieving input from the RightArrow Key (the right arrow is currently being pressed) AND the rightBlocked boolean is false.
+            if(Input.GetKeyDown(KeyCode.RightArrow) && rightBlocked == false) {
+                //Creates a clone of the prefab object playerRightAttack 1 spacial unit to the right (towards positive x) of the player's current position.
                 GameObject playerRightAttackTemp = Instantiate(playerRightAttack, playerPosition + new Vector2(1,0), transform.rotation) as GameObject;
-                //playerNoAttack = true;
+//####### REMEMBER, VERY IMPORTANT playerNoAttack = true;
                 Destroy(playerRightAttackTemp, 0.3f);
             }
         }
     }
+
     //A method that runs when the collider component of the Player object detects collision with another object's collider that is set to "is trigger".
     private void OnTriggerEnter2D(Collider2D other) {
-        //Checks the tag of the foreign 
+        //Checks the tag of the foreign GameObject. Proceeds with seeded instruction if the tag is "upBlocked".
         if(other.CompareTag("upBlocked")) {
+            //Sets the variable "upBlocked" to true. This is used to stop the Player object from being able to move upwards when it shouldn't, i.e there's something in the way.
             upBlocked = true;
+        //Checks the tag of the foreign GameObject. Proceeds with seeded instruction if the tag is "downBlocked".
         } else if(other.CompareTag("downBlocked")) {
+            //Sets the variable "upBlocked" to true. This is used to stop the Player object from being able to move downwards when it shouldn't, i.e there's something in the way.
              downBlocked = true;
+        //Checks the tag of the foreign GameObject. Proceeds with seeded instruction if the tag is "leftBlocked".
         } else if(other.CompareTag("leftBlocked")) {
+            //Sets the variable "upBlocked" to true. This is used to stop the Player object from being able to move left when it shouldn't, i.e there's something in the way.
              leftBlocked = true;
+        //Checks the tag of the foreign GameObject. Proceeds with seeded instruction if the tag is "rightBlocked".
         } else if(other.CompareTag("rightBlocked")) {
+            //Sets the variable "upBlocked" to true. This is used to stop the Player object from being able to move right when it shouldn't, i.e there's something in the way.
+            rightBlocked = true;
+        //Checks the tag of the foreign GameObject. Proceeds with seeded instruction if the tag is "Doorway".
+        } else if(other.CompareTag("Doorway")) {
+            //Sets the variables "leftBlocked" and "rightBlocked" to true. This is only used once, for when the Player object is in the doorway of the stone building, and shouldn't be able to move left or right.
+            leftBlocked = true;
             rightBlocked = true;
         }
     }
 
+    //A method that runs when the collider component of the Player object detects that the collider has exited the collider of a foreign GameObject.
     private void OnTriggerExit2D(Collider2D other) {
+        //Checks the tag of the foreign GameObject. Proceeds with seeded instruction if the tag is "upBlocked".
         if(other.CompareTag("upBlocked")) {
+            //Sets the variable "upBlocked" to false. This is used to give the Player object the ability to move upwards again, once there is no longer anything blocking its path.
             upBlocked = false;
+        //Checks the tag of the foreign GameObject. Proceeds with seeded instruction if the tag is "downBlocked".
         } else if(other.CompareTag("downBlocked")) {
+            //Sets the variable "downBlocked" to false. This is used to give the Player object the ability to move downwards again, once there is no longer anything blocking its path.
             downBlocked = false;
+        //Checks the tag of the foreign GameObject. Proceeds with seeded instruction if the tag is "leftBlocked".
         } else if(other.CompareTag("leftBlocked")) {
+            //Sets the variable "leftBlocked" to false. This is used to give the Player object the ability to move left again, once there is no longer anything blocking its path.
             leftBlocked = false;
+        //Checks the tag of the foreign GameObject. Proceeds with seeded instruction if the tag is "rightBlocked".
         } else if(other.CompareTag("rightBlocked")) {
+            //Sets the variable "rightBlocked" to false. This is used to give the Player object the ability to move right again, once there is no longer anything blocking its path.
             rightBlocked = false;
+        //Checks the tag of the foreign GameObject. Proceeds with seeded instruction if the tag is "Doorway".
+        } else if(other.CompareTag("Doorway")) {
+            //Sets the variables "leftBlocked" and "rightBlocked" to false. This is only used once, for when the Player object leaves the doorway of the stone building, where it shouldn't have been able to move left or right.
+            leftBlocked = false;
+            rightBlocked = false;
+        } else if(other.CompareTag("lockedDoor")) {
+            //Sets the variable "upBlocked" to true. This is used once to avoid a glitch that allows the playre to move through the locked door.
+            upBlocked = true;
         }
     }
 }
