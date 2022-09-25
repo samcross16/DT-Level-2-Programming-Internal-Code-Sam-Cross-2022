@@ -8,14 +8,15 @@ public class TextPopUp : MonoBehaviour
 
     //Initialising variables here to make code more digestable.
 
-    //A GameObject called textBox. This is the box that appears on screen to describe a scene for the player.
-    public GameObject textBox;
-    //A sting variable called textBoxWords. This is the actual writing that appears in the text component and on the screen.
-    public string dialogWords;
+    //A GameObject called textBox_lockedDoor. This is the box that appears on screen to tell the player the door is locked.
+    public GameObject textBox_lockedDoor;
+    //A sting variable called dialogWords_lockedDoor. This variable stores the words that will be displayed in the text box.
+    public string dialogWords_lockedDoor;
     //A boolean variable called playerInRange. This will be used for determining whether or not the player is inside the area that they should be for the text box should appear on the screen.
-    public bool playerInRange;
-
-    public Text dialogText;
+    public bool playerInRange_lockedDoor;
+    //A Text variable called dialogText_lockedDoor. The Text variable is unique to the UnityEngine.UI library. 
+    //This is the UI component that displays the message that is to appear inside the text box.
+    public Text dialogText_lockedDoor;
     //This is used to access the Player object's components (the PlayerController script & class for this purpose) later in this script.
     public GameObject PlayerObject;
     //References the PlayerController class from the PlayerController script. this allows the variables from the PlayerController class to be accessed for use in this script.
