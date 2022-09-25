@@ -15,11 +15,20 @@ public class EnemyBehaviourController : MonoBehaviour
     //GameObject called demonAttackPrefab used to reference the prefab object that is used for the enemy's attacks. This object is cloned when the demon attacks.
     public GameObject demonAttackPrefab;
 
+    public GameObject textBox;
+    public Text textBoxText;
+    public Text textBoxSmallText;
+    private string gameWin;
+    private string smallText;
+
+    public string LevelToLoad;
     // Start is called before the first frame update
     void Start()
     {
         PlayerVariables = PlayerObject.GetComponent<PlayerController>();
         DemonHealth = 3;
+        smallText = "";
+        gameWin = "Congratulations, you vanquished the demon! press enter/return to return to the menu screen"
     }
 
     // Update is called once per frame
@@ -27,11 +36,18 @@ public class EnemyBehaviourController : MonoBehaviour
     {
         if(DemonHealth == 0) {
             Destroy(Demon);
+            textBoxText.text = gameWin;
+            textBoxSmallText.text = smallText;
+            textBox.SetActive(true);
+            if(Input.GetKeyDown(KeyCode.Return)) {
+                SceneManager.LoadScene(LevelToLoad);
+            }
         }
         if(PlayerVariables.playerTurn == false) {
             GameObject demonAttackTemp = Instantiate(demonAttackPrefab, PlayerVariables.transform.position, PlayerVariables.transform.rotation) as GameObject;
             //Destroy(demonAttackTemp, 0.3f);
             PlayerVariables.playerTurn = true;
+            
         }
     }
 

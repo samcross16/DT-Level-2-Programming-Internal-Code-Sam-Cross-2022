@@ -1,12 +1,8 @@
-//MAD IMPORTANT:
-//UPDATE GITHUB BEFORE ANYTHING ELSE. YOU MADE THE CODE FOR THE PLAYER ATTACKS, THE LOCKED DOOR MESSAGE, AND THE CODE TO DAMAGE THE ENEEMY WHEN THE PLAYER ATTACKS IT.
-//UPDATE TRELLO WITH WHAT YOU'VE DONE. LOCKED DOOR AND KEY CODING, YOU GOT THE LOCKED DOOR MESSAGE WORKING, AND THE TRIGGER DELETES ITSELF.
-//FIGURE OUT HOW TO FIX THE PLAYER BEING ABLE TO MOVE UPWARDS AFTER THE TRIGGER IS DELETED.
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 { 
@@ -22,6 +18,7 @@ public class PlayerController : MonoBehaviour
     public bool playerTurn;
     public int playerMovesRemaining;
     public int PlayerHealth;
+    public string LevelToLoad;
     //Initialises the variables that are used to deliver the game over message. The textBox refers to the UI GameObject, the textBoxTextComponent refers to the child of that object which is the UI Text component, and the gameOverMessage refers to the words that will be displayed.
     //smallText refers to the smaller text object that is a child of the text box. Empty refers to the text that will be displayed inside the smallText. In this case the small text shoudl remain blank.
     public GameObject textBox;
@@ -106,6 +103,9 @@ public class PlayerController : MonoBehaviour
                 smallText.text = Empty;
                 textBox.SetActive(true);
                 Destroy(Self);
+                if(Input.GetKeyDown(KeyCode.Return)) {
+                    SceneManager.LoadScene(LevelToLoad);
+                }
             }
         }
 
