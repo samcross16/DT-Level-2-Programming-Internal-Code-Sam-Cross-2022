@@ -18,7 +18,20 @@ public class PlayerController : MonoBehaviour
     public bool playerMovementStop;
     public bool playerNoAttack;
     public bool playerHasKey;
-    //Initialises the Vector2 variable unique to the Unity engine. The Vector variables store data about the position of objects in the game scene. Vector2 is used for the first 2 dimensions, x and y. This is more appropriate for a 2D environment than the more common Vector3, as only having to manage 2 dimensions reduces the chance for bugs or coding errors.
+    public bool playerInCombat;
+    public bool playerTurn;
+    public int playerMovesRemaining;
+    public int PlayerHealth;
+    //Initialises the variables that are used to deliver the game over message. The textBox refers to the UI GameObject, the textBoxTextComponent refers to the child of that object which is the UI Text component, and the gameOverMessage refers to the words that will be displayed.
+    //smallText refers to the smaller text object that is a child of the text box. Empty refers to the text that will be displayed inside the smallText. In this case the small text shoudl remain blank.
+    public GameObject textBox;
+    public Text textBoxTextComponent;
+    private string gameOverMessage;
+    public Text smallText;
+    private string Empty;
+    //Initialises the GameObject variable from the Unity. This is used to reference the Player object that this script is attatched to.
+    public GameObject Self;
+    //Initialises the Vector2 variable from the UnityEngine library. The Vector variables store data about the position of objects in the game scene. Vector2 is used for the first 2 dimensions, x and y. This is more appropriate for a 2D environment than the more common Vector3, as only having to manage 2 dimensions reduces the chance for bugs or coding errors.
     public Vector2 playerPosition;
 
     //Initialises four GameObject variables, called playerUpAttack, playerDownAttack, playerLeftAttack, and playerRightAttack. These are used to initialise and destroy the prefabricated objects for the player's attacks in combat. 
@@ -30,7 +43,9 @@ public class PlayerController : MonoBehaviour
     //The Start method is called at the beginning of the game, before the first frame update (before any calls of the Update method).
     void Start()
     {
-
+        playerTurn = true;
+        gameOverMessage = "You Died. Press enter/return to return to the main menu";
+        Empty = "";
     }
 
     // Update is called once per frame during gameplay.
@@ -40,7 +55,7 @@ public class PlayerController : MonoBehaviour
         playerPosition = transform.position;
         
         //Checks if the playerMovementStop variable is false to run the seeded code. This is done so that the Player object can be forced to not move for things such as dialog, and during the enemy's turn in combat.
-        if(playerMovementStop == false) {
+        if(playerMovementStop == false && playerTurn == true) {
             //Checks for input from the W key.
             if(Input.GetKeyDown(KeyCode.W)) {
                 //Checks that the upBlocked variable is false, and therefore the tile upwards/north of the Player object isn't blocked. 
@@ -85,37 +100,44 @@ public class PlayerController : MonoBehaviour
                         transform.Translate(-1f, 0f, 0f); }
                 }
             }
+
+            if(PlayerHealth <= 0) {
+                textBoxTextComponent.text = gameOverMessage;
+                smallText.text = Empty;
+                textBox.SetActive(true);
+                Destroy(Self);
+            }
         }
 
         //Proceeds with the seeded instructions if the playerNoAttack variable is false, i.e if it is appropriate for the player to attack in this instance.
-        if(playerNoAttack == false) {
+        if(playerNoAttack == false && playerInCombat == true && playerTurn == true) {
             //Proceeds with the seeded code if the computer is recieving input from the UpArrow Key (the up arrow is currently being pressed) AND the upBlocked boolean is false.
             if(Input.GetKeyDown(KeyCode.UpArrow) && upBlocked == false) {
                 //Creates a clone of the prefab object playerUpAttack 1 spacial unit upwards (towards positive y) of the player's current position.
                 GameObject playerUpAttackTemp = Instantiate(playerUpAttack, playerPosition + new Vector2(0,1), transform.rotation) as GameObject;
-//####### REMEMBER, VERY IMPORTANT playerNoAttack = true;
                 Destroy(playerUpAttackTemp, 0.3f);
+                playerTurn = false;
             }
             //Proceeds with the seeded code if the computer is recieving input from the DownArrow Key (the down arrow is currently being pressed) AND the downBlocked boolean is false.
             if(Input.GetKeyDown(KeyCode.DownArrow) && downBlocked == false) {
                 //Creates a clone of the prefab object playerDownAttack 1 spacial unit downwards (towards negative y) of the player's current position.
                 GameObject playerDownAttackTemp = Instantiate(playerDownAttack, playerPosition + new Vector2(0,-1), transform.rotation) as GameObject;
-//####### REMEMBER, VERY IMPORTANT playerNoAttack = true;
                 Destroy(playerDownAttackTemp, 0.3f);
+                playerTurn = false;
             }
             //Proceeds with the seeded code if the computer is recieving input from the LeftArrow Key (the left arrow is currently being pressed) AND the leftBlocked boolean is false.
             if(Input.GetKeyDown(KeyCode.LeftArrow) && leftBlocked == false) {
                 //Creates a clone of the prefab object playerLeftAttack 1 spacial unit to the left (towards negative x) of the player's current position.
                 GameObject playerLeftAttackTemp = Instantiate(playerLeftAttack, playerPosition + new Vector2(-1,0), transform.rotation) as GameObject;
-//####### REMEMBER, VERY IMPORTANT playerNoAttack = true;
                 Destroy(playerLeftAttackTemp, 0.3f);
+                playerTurn = false;
             }
             //Proceeds with the seeded code if the computer is recieving input from the RightArrow Key (the right arrow is currently being pressed) AND the rightBlocked boolean is false.
             if(Input.GetKeyDown(KeyCode.RightArrow) && rightBlocked == false) {
                 //Creates a clone of the prefab object playerRightAttack 1 spacial unit to the right (towards positive x) of the player's current position.
                 GameObject playerRightAttackTemp = Instantiate(playerRightAttack, playerPosition + new Vector2(1,0), transform.rotation) as GameObject;
-//####### REMEMBER, VERY IMPORTANT playerNoAttack = true;
                 Destroy(playerRightAttackTemp, 0.3f);
+                playerTurn = false;
             }
         }
     }
@@ -143,6 +165,12 @@ public class PlayerController : MonoBehaviour
             //Sets the variables "leftBlocked" and "rightBlocked" to true. This is only used once, for when the Player object is in the doorway of the stone building, and shouldn't be able to move left or right.
             leftBlocked = true;
             rightBlocked = true;
+        }
+        if(other.CompareTag("Enemy")) {
+            PlayerHealth = 0;
+        }
+        if(other.CompareTag("enemyAttack")) {
+            PlayerHealth -= 1;
         }
     }
 
