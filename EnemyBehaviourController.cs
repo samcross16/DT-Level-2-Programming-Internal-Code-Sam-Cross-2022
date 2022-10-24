@@ -28,7 +28,7 @@ public class EnemyBehaviourController : MonoBehaviour
         PlayerVariables = PlayerObject.GetComponent<PlayerController>();
         DemonHealth = 3;
         smallText = "";
-        gameWin = "Congratulations, you vanquished the demon! press enter/return to return to the menu screen"
+        gameWin = "Congratulations, you vanquished the demon! press enter/return to return to the menu screen";
     }
 
     // Update is called once per frame
