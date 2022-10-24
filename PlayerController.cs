@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 { 
@@ -15,19 +14,13 @@ public class PlayerController : MonoBehaviour
     public bool playerNoAttack;
     public bool playerHasKey;
     public bool playerInCombat;
-    public bool playerTurn;
+    public bool playerTurn = true;
     public int playerMovesRemaining;
     public int PlayerHealth;
     public string LevelToLoad;
-    //Initialises the variables that are used to deliver the game over message. The textBox refers to the UI GameObject, the textBoxTextComponent refers to the child of that object which is the UI Text component, and the gameOverMessage refers to the words that will be displayed.
-    //smallText refers to the smaller text object that is a child of the text box. Empty refers to the text that will be displayed inside the smallText. In this case the small text shoudl remain blank.
-    public GameObject textBox;
-    public Text textBoxTextComponent;
-    private string gameOverMessage;
-    public Text smallText;
-    private string Empty;
-    //Initialises the GameObject variable from the Unity. This is used to reference the Player object that this script is attatched to.
-    public GameObject Self;
+    private int swordDamage = 1;
+    private int magicDamage = 25;
+    public int playerDamage;
     //Initialises the Vector2 variable from the UnityEngine library. The Vector variables store data about the position of objects in the game scene. Vector2 is used for the first 2 dimensions, x and y. This is more appropriate for a 2D environment than the more common Vector3, as only having to manage 2 dimensions reduces the chance for bugs or coding errors.
     public Vector2 playerPosition;
 
@@ -36,18 +29,17 @@ public class PlayerController : MonoBehaviour
     public GameObject playerDownAttack;
     public GameObject playerLeftAttack;
     public GameObject playerRightAttack;
-
+    public GameObject playerMagicAttack;
     //The Start method is called at the beginning of the game, before the first frame update (before any calls of the Update method).
     void Start()
     {
-        playerTurn = true;
-        gameOverMessage = "You Died. Press enter/return to return to the main menu";
-        Empty = "";
+        playerDamage = swordDamage;
     }
 
     // Update is called once per frame during gameplay.
     void Update() {
-        
+
+
         //Makes the playerPosition variable equal to the position of the Player object's transform in the scene, making playerPosition store the location of the Player object.
         playerPosition = transform.position;
         
@@ -98,15 +90,6 @@ public class PlayerController : MonoBehaviour
                 }
             }
 
-            if(PlayerHealth <= 0) {
-                textBoxTextComponent.text = gameOverMessage;
-                smallText.text = Empty;
-                textBox.SetActive(true);
-                Destroy(Self);
-                if(Input.GetKeyDown(KeyCode.Return)) {
-                    SceneManager.LoadScene(LevelToLoad);
-                }
-            }
         }
 
         //Proceeds with the seeded instructions if the playerNoAttack variable is false, i.e if it is appropriate for the player to attack in this instance.
@@ -142,6 +125,13 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    //void MagicAttack() {
+        //GameObject magicAttackTemp = Instantiate(, .transform.position, .transform.rotation) as GameObject;
+        //Destroy(demonAttackTemp, 0.3f);
+        //PlayerVariables.playerTurn = true;
+    //}
+
+
     //A method that runs when the collider component of the Player object detects collision with another object's collider that is set to "is trigger".
     private void OnTriggerEnter2D(Collider2D other) {
         //Checks the tag of the foreign GameObject. Proceeds with seeded instruction if the tag is "upBlocked".
@@ -166,12 +156,9 @@ public class PlayerController : MonoBehaviour
             leftBlocked = true;
             rightBlocked = true;
         }
-        if(other.CompareTag("Enemy")) {
-            PlayerHealth = 0;
-        }
-        if(other.CompareTag("enemyAttack")) {
-            PlayerHealth -= 1;
-        }
+        //if(other.CompareTag("Enemy")) {
+            //PlayerHealth = 0;
+        //}
     }
 
     //A method that runs when the collider component of the Player object detects that the collider has exited the collider of a foreign GameObject.
